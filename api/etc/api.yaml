@@ -1,0 +1,96 @@
+Name: idrm-api
+Host: 0.0.0.0
+Port: 8888
+
+# Telemetry 配置
+Telemetry:
+  ServiceName: idrm-api
+  ServiceVersion: 1.0.0
+  Environment: dev
+  
+  Log:
+    Level: info
+    Mode: file
+    Path: logs
+    KeepDays: 7
+    RemoteEnabled: false
+    RemoteUrl: http://log-collector:8080/api/logs
+    RemoteBatch: 100
+    RemoteTimeout: 5
+    
+  Trace:
+    Enabled: false
+    Endpoint: localhost:4317
+    Sampler: 1.0
+    Batcher: otlp
+    
+  Audit:
+    Enabled: false
+    Url: http://audit-service:8080/api/audit
+    Buffer: 100
+
+# 数据库配置（详细配置）
+DB:
+  # 资源目录数据库
+  ResourceCatalog:
+    Host: 127.0.0.1
+    Port: 3306
+    Database: idrm_resource_catalog
+    Username: root
+    Password: idrm@2024
+    Charset: utf8mb4
+    # 连接池配置
+    MaxIdleConns: 10
+    MaxOpenConns: 100
+    ConnMaxLifetime: 3600
+    ConnMaxIdleTime: 600
+    # 日志配置
+    LogLevel: warn
+    SlowThreshold: 200
+    SkipDefaultTxn: true
+    PrepareStmt: true
+    SingularTable: true
+    DisableForeignKey: true
+  
+  # 数据视图数据库
+  DataView:
+    Host: 127.0.0.1
+    Port: 3306
+    Database: idrm_data_view
+    Username: root
+    Password: your_password
+    Charset: utf8mb4
+    MaxIdleConns: 10
+    MaxOpenConns: 100
+    ConnMaxLifetime: 3600
+    ConnMaxIdleTime: 600
+    LogLevel: warn
+    SlowThreshold: 200
+    SkipDefaultTxn: true
+    PrepareStmt: true
+    SingularTable: true
+    DisableForeignKey: true
+  
+  # 数据理解数据库
+  DataUnderstanding:
+    Host: 127.0.0.1
+    Port: 3306
+    Database: idrm_data_understanding
+    Username: root
+    Password: your_password
+    Charset: utf8mb4
+    MaxIdleConns: 10
+    MaxOpenConns: 100
+    ConnMaxLifetime: 3600
+    ConnMaxIdleTime: 600
+    LogLevel: warn
+    SlowThreshold: 200
+    SkipDefaultTxn: true
+    PrepareStmt: true
+    SingularTable: true
+    DisableForeignKey: true
+
+# 认证配置
+Auth:
+  AccessSecret: your_secret_key_here
+  AccessExpire: 7200

@@ -1,0 +1,12 @@
+syntax = "v1"
+
+// API 入口文件
+// ⚠️ 强制要求：必须使用此入口文件执行 goctl 生成
+// 命令: goctl api go -api api/doc/api.api -dir api/ --style=go_zero --type-group
+
+// 导入通用类型
+import "base.api"
+
+// 导入各模块 API（按需添加）
+// import "catalog/category.api"
+// import "auth/user.api"

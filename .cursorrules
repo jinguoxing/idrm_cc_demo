@@ -1,0 +1,138 @@
+# IDRM Project AI Rules
+
+You are an AI assistant working on the IDRM project, an intelligent data resource management platform built with Go-Zero.
+
+## Project Context
+
+| Item | Value |
+|------|-------|
+| Architecture | Go-Zero Microservices + Dual ORM |
+| Language | Go 1.21+ |
+| Framework | Go-Zero v1.9+ |
+| Database | MySQL 8.0, Redis 7.0, Kafka 3.0 |
+
+## Key Files
+
+| 文件 | 用途 |
+|------|------|
+| `.specify/memory/constitution.md` | 项目宪章（核心规范） |
+| `.specify/templates/spec-template.md` | 需求规范模板 |
+| `.specify/templates/plan-template.md` | 技术设计模板 |
+| `.specify/templates/tasks-template.md` | 任务拆分模板 |
+| `.github/prompts/` | AI 引导文件 |
+
+## Core Principles
+
+1. **Always read specs first**: Check `.specify/memory/constitution.md`
+2. **Follow 5-phase workflow**: Context → Specify → Design → Tasks → Implement
+3. **Layered architecture**: Handler → Logic → Model
+4. **Dual ORM pattern**: Use Model interface, support GORM and SQLx
+5. **<50 lines per function**: Keep functions small and focused
+
+## 5-Phase Workflow
+
+**⚠️ 每个阶段完成后必须等待用户确认，禁止自动进入下一阶段**
+
+### Phase 0: Context
+- 阅读项目规范和相关模板
+- 理解现有代码结构
+- 确认开发环境就绪
+- ⏸️ **STOP** - 等待用户确认
+
+### Phase 1: Specify
+- Reference: `@.specify/templates/spec-template.md`
+- Output: `specs/{feature}/spec.md`
+- Format: EARS notation + User Stories
+- ⏸️ **STOP** - 等待用户确认
+
+### Phase 2: Design (Plan)
+- Reference: `@.specify/templates/plan-template.md`
+- Output: `specs/{feature}/plan.md`
+- Include: Architecture, DDL, API design
+- ⏸️ **STOP** - 等待用户确认
+
+### Phase 3: Tasks
+- Reference: `@.specify/templates/tasks-template.md`
+- Output: `specs/{feature}/tasks.md`
+- Each task < 50 lines
+- ⏸️ **STOP** - 等待用户确认
+
+### Phase 4: Implement
+- Follow tasks.md in order
+- Generate Model → Logic → Handler → Tests
+- ✅ 完成所有任务
+
+## Architecture Rules
+
+### Handler Layer (`api/internal/handler/`)
+- ✅ Parse HTTP requests
+- ✅ Call Logic layer
+- ✅ Return unified response
+- ❌ NO business logic
+- ❌ NO direct database access
+
+### Logic Layer (`api/internal/logic/`)
+- ✅ Implement business rules
+- ✅ Call Model layer
+- ✅ Data transformation
+- ❌ NO HTTP-related code
+- ❌ NO direct database access
+
+### Model Layer (`model/{module}/{table}/`)
+- ✅ Define data access interface
+- ✅ Implement CRUD operations
+- ✅ Transaction management
+- ❌ NO business logic
+
+## Model File Structure
+
+```
+model/{module}/{table}/
+├── interface.go    # Model 接口定义
+├── types.go        # 数据结构
+├── vars.go         # 常量和错误
+├── factory.go      # ORM 工厂
+├── gorm_dao.go     # GORM 实现
+└── sqlx_model.go   # SQLx 实现
+```
+
+## Coding Standards
+
+### File Naming
+- Handler: `{action}{resource}handler.go`
+- Logic: `{action}{resource}logic.go`
+- Model GORM: `gorm_dao.go`
+- Model SQLx: `sqlx_model.go`
+
+### Code Style
+- Import grouping: stdlib → third-party → internal
+- Error wrapping: Use `%w` not `%v`
+- Comments: Chinese, comprehensive
+- Functions: ≤50 lines
+
+### Error Handling
+- Never ignore errors
+- Use `fmt.Errorf("context: %w", err)`
+- Define errors in `vars.go`
+
+## Quality Standards
+
+```bash
+go build ./...              # 编译检查
+go test -cover ./...        # 测试检查 (>80%)
+golangci-lint run           # 代码检查
+```
+
+- ✅ Compile successfully
+- ✅ Pass tests (coverage >80%)
+- ✅ No golangci-lint errors
+- ✅ Functions ≤50 lines
+- ✅ All public items have Chinese comments
+
+## References
+
+- Constitution: `.specify/memory/constitution.md`
+- Layered Architecture: `sdd_doc/spec/architecture/layered-architecture.md`
+- Dual ORM: `sdd_doc/spec/architecture/dual-orm-pattern.md`
+- Go Style: `sdd_doc/spec/coding-standards/go-style-guide.md`
+- API Design: `sdd_doc/spec/architecture/api-design-guide.md`
